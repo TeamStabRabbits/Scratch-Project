@@ -30,7 +30,6 @@ const Login = (props) => {
 
 function handleNewUserInput(e, userData, setUserData) {
     setUserData(() => ({...userData, [e.target.name]: e.target.value}));
-    
 }
 //{ username: 'zxc', password: 'a', location: '1' } 
 
