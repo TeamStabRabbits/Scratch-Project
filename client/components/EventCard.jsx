@@ -7,8 +7,9 @@ function EventCard (props) {
 
   return (
     <div>
-      <p>Event name: {props.eventName}</p>
-      <p>Location: {props.location}</p>
+      {/* <p>Event name: {props.eventName}</p> */}
+      {/* <p>Location: {props.location}</p> */}
+      <p>{props.eventCardData}</p>
       <Button value="Enter Chatroom" onClick>Enter Chatroom</Button>
     </div>
   )
