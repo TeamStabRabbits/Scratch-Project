@@ -20,6 +20,9 @@ export default function Navbar(props) {
             </Button>
             {/* //--eric said to add a button that links to /eventpage */}
           </Link>
+          <Link to="/eventPage">
+            <button>event page</button>
+            </Link>
         </div>
         
         <Routes>

@@ -32,9 +32,10 @@ function handleNewUserInput(e, userData, setUserData) {
     setUserData(() => ({...userData, [e.target.name]: e.target.value}));
     
 }
-//{ username: 'zxc', password: 'a', location: '1' } 
+// { username: 'zxc', password: 'a', location: '1' } 
 
 function login(e, userData, setUserData, isNewUser, setIsNewUser){
+  
   fetch('/login', { //http://localhost:3000/
     method: 'POST',
     headers: {
