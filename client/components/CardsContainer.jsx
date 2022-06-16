@@ -12,8 +12,8 @@ function CardsContainer({ eventCardContainer }) {
   });
 
   return (
-    <div>
-      from card container
+    <div className="eventCardContainer">
+      {/* from card container */}
       {eventCards}
     </div>
   );

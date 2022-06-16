@@ -24,7 +24,7 @@ function EventsPage(props) {
         console.log("error1!");
       });
     // props.setEventData({ ...props.eventData, eventCardsContainer: [1, 2, 3] });
-  }, [props.userData]);
+  }, []);
 
   // handles search inputs
   function handleEventSearchInput(e, props) {
