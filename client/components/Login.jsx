@@ -10,7 +10,7 @@ const Login = (props) => {
               <input type="text" name='username' value={props.userData.username} onChange={(event) => {handleNewUserInput(event, props.userData, props.setUserData)}}/>
               Password:
               <input type="text" name='password' value={props.userData.password} onChange={(event) => {handleNewUserInput(event, props.userData, props.setUserData)}}/>
-              <Button style={{backgroundColor: "red"}} type="submit" value="Log in" onClick={(event) => {login(event, props.userData, props.setUserData, props.isNewUser, props.setIsNewUser)}}> login </Button>
+              <Button style={{backgroundColor: "red"}} type="submit" value="Log in" onClick={(event) => {login(props.userData, props.onLogin)}}> login </Button>
               <Button style={{backgroundColor: "blue"}} type="submit" value="Sign Up" onClick={() => {props.setIsNewUser(!props.isNewUser);}}> Sign up </Button>
           </Box>
         )
@@ -33,7 +33,7 @@ function handleNewUserInput(e, userData, setUserData) {
 }
 //{ username: 'zxc', password: 'a', location: '1' } 
 
-function login(e, userData, setUserData, isNewUser, setIsNewUser){
+function login(userData, onLogin){
   fetch('/login', { //http://localhost:3000/
     method: 'POST',
     headers: {
@@ -49,7 +49,8 @@ function login(e, userData, setUserData, isNewUser, setIsNewUser){
   .then(response => {
     console.log(response);
     if(response){
-      () => <Navigate to="/eventPage" userData={userData} setUserData={setUserData} isNewUser={isNewUser} setIsNewUser={setIsNewUser}/>
+      onLogin(response)
+      // <Navigate to="/eventPage" userData={userData} setUserData={setUserData} isNewUser={isNewUser} setIsNewUser={setIsNewUser}/>
     }
   })
 }

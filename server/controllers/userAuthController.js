@@ -59,7 +59,7 @@ userAuthController.setJWT = (req, res, next) => {
       });
     }
 
-    res.cookie('auth', token, { httpOnly: true });
+    res.cookie('auth', token);
     return next();
   });
 }

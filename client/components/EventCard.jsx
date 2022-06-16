@@ -9,8 +9,10 @@ function EventCard (props) {
     <div>
       {/* <p>Event name: {props.eventName}</p> */}
       {/* <p>Location: {props.location}</p> */}
-      <p>{props.eventCardData}</p>
-      <Button value="Enter Chatroom" onClick>Enter Chatroom</Button>
+      <p>{JSON.stringify(props.eventCardData)}</p>
+      <h1>{props.eventCardData.event_name}</h1>
+      <p>{props.eventCardData.location}</p>
+      <Button value="Enter Chatroom" /* onClick */>Enter Chatroom</Button>
     </div>
   )
 
