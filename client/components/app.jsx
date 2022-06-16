@@ -15,9 +15,16 @@ import jwtDecode from "jwt-decode";
 // App useEffect runs -> state is now { username: 'yoojin', location: 'NYC' }
 // EventsPage useEffect runs -> { username: '', location: '' }
 
+// Render App
+// useeffect in app fires
+// asynchronous state setters did not set state before navigating to event page
+// event page now has initial state which is empty for username and location
+
+
 function App(props) {
   const [isNewUser, setIsNewUser] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [appIsReady, setAppIsReady] = useState(false);
   // const [pageRoute, setPageRoute] = useState();
 
   const [userData, setUserData] = useState({
@@ -35,6 +42,7 @@ function App(props) {
 
   useEffect(() => {
     const token = getCookie('auth');
+    console.log('use effect in app.jsx')
 
     if (!token) {
       console.log("go login");
@@ -43,12 +51,14 @@ function App(props) {
     const newUserData = jwtDecode(token); 
     // console.log('newUserData in useEffect:', newUserData);
     setUserData({...userData, ...newUserData});
-    setIsLoggedIn(true);        
+    setIsLoggedIn(true);
       console.log("you are logged in");
       navigate("/", { replace: true });
     }
+
+    setAppIsReady(true);
   }, []);
-  // console.log('newUserData in app render:', userData);
+  console.log('newUserData in app render:', userData);
 
   const handleLogin = (userData) => {
     setUserData(userData);
@@ -56,37 +66,45 @@ function App(props) {
     navigate("/", { replace: true });
   };
 
-  return (
-    <Routes>
-      <Route
-        path="/"
-        element={
-          <EventsPage
-            userData={userData}
-            setUserData={setUserData}
-            isNewUser={isNewUser}
-            setIsNewUser={setIsNewUser}
-            eventData={eventData}
-            setEventData={setEventData}
-          />
-        }
-      />
-      <Route
-        path="/login"
-        element={
-          <Login
-            userData={userData}
-            setUserData={setUserData}
-            isNewUser={isNewUser}
-            setIsNewUser={setIsNewUser}
-            eventData={eventData}
-            setEventData={setEventData}
-            onLogin={handleLogin}
-          />
-        }
-      />
-    </Routes>
-  );
+  if (appIsReady) {
+    console.log("Rendering app now");
+    return (
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <EventsPage
+              userData={userData}
+              setUserData={setUserData}
+              isNewUser={isNewUser}
+              setIsNewUser={setIsNewUser}
+              eventData={eventData}
+              setEventData={setEventData}
+            />
+          }
+          
+        />
+        <Route
+          path="/login"
+          element={
+            <Login
+              userData={userData}
+              setUserData={setUserData}
+              isNewUser={isNewUser}
+              setIsNewUser={setIsNewUser}
+              eventData={eventData}
+              setEventData={setEventData}
+              onLogin={handleLogin}
+            />
+          }
+        />
+      </Routes>
+    );
+  }
+  else {
+    console.log("Not rendering pages yet");
+    return <div>Nothing yet</div>;
+  }
 }
 
 {
