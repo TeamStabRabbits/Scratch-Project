@@ -6,20 +6,25 @@ import CardsContainer from "./CardsContainer.jsx";
 
 function EventsPage(props) {
   // on initial render only, set event cards to all events in user default location
+  const count = 1;
   useEffect(() => {
-    // fetch(
-    //   `/events/?username=${props.userData.username}&location=${props.userData.location}`
-    // )
-    //   .then((data) => data.json())
-    //   .then((data) => {
-    //     props.setEventData({ ...eventData, eventCardsContainer: [...data] });
-    //     console.log(props.eventData);
-    //   })
-    //   .catch((err) => {
-    //     console.log("error!");
-    //   }); 
-    props.setEventData({...props.eventData, eventCardsContainer: [1,2,3]})
-  }, []);
+    console.log('Userdata:', props.userData)
+    console.log('Route:', `/events/${props.userData.location}`)
+    fetch(`/events/${props.userData.location}`)
+      .then((data) => data.json())
+      .then((data) => {
+        console.log(data);
+        props.setEventData({
+          ...props.eventData,
+          eventCardsContainer: [...data],
+        });
+      })
+      .catch((err) => {
+        console.error(err);
+        console.log("error1!");
+      });
+    // props.setEventData({ ...props.eventData, eventCardsContainer: [1, 2, 3] });
+  }, [props.userData]);
 
   // handles search inputs
   function handleEventSearchInput(e, props) {
@@ -43,11 +48,12 @@ function EventsPage(props) {
     )
       .then((data) => data.json())
       .then((data) => {
+        console.log(data);
         props.setEventData({ ...props.eventData, eventCardsContainer: [data] });
-        console.log(props.eventData);
       })
       .catch((err) => {
-        console.log("error!");
+        console.error(err);
+        console.log("error2!");
       });
   }
 

@@ -78,19 +78,19 @@ eventsController.addToJoin = async (req, res, next) => {
 //search events by keywords/title
 eventsController.getEventsInitial = async (req, res, next) => {
 
-  const { user } = req.params
+  const { location } = req.params
 
-  const text = `
+/*   const text = `
     SELECT location FROM users
     WHERE username = $1
   `;
   const values = [user]
-  //const {name, location, } = req.body;
+  //const {name, location, } = req.body; */
 
 
   try {
-    const userLoc = await db.query(text, values);
-    const location = userLoc.rows[0].location
+/*     const userLoc = await db.query(text, values);
+    const location = userLoc.rows[0].location */
     console.log((location), "location")
     const text2 = `
       SELECT * FROM events
@@ -98,6 +98,7 @@ eventsController.getEventsInitial = async (req, res, next) => {
     `;
     const values2 = [location]
     const events = (await db.query(text2, values2)).rows;
+    console.log(events);
     res.locals.events = events;
     return next();
   }

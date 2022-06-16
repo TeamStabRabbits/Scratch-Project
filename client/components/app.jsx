@@ -6,6 +6,14 @@ import Login from "./Login.jsx";
 // import {Box, Input, Button} from '@mui/material';
 import EventsPage from "./EventsPage.jsx";
 import { useNavigate, Routes, Route } from "react-router-dom";
+import jwtDecode from "jwt-decode";
+
+// Render App
+// Queue App useEffect
+// Render EventsPage
+// Queue EventsPage useEffect w/ initial state { username: '', location: '' }
+// App useEffect runs -> state is now { username: 'yoojin', location: 'NYC' }
+// EventsPage useEffect runs -> { username: '', location: '' }
 
 function App(props) {
   const [isNewUser, setIsNewUser] = useState(false);
@@ -13,9 +21,8 @@ function App(props) {
   // const [pageRoute, setPageRoute] = useState();
 
   const [userData, setUserData] = useState({
-    username: "yoojpooj",
-    password: "password123",
-    location: "new york",
+    username: "",
+    location: "",
   });
 
   const [eventData, setEventData] = useState({
@@ -27,16 +34,25 @@ function App(props) {
   let navigate = useNavigate();
 
   useEffect(() => {
-    if (!isLoggedIn) {
+    const token = getCookie('auth');
+
+    if (!token) {
       console.log("go login");
       navigate("/login", { replace: true });
     } else {
+    const newUserData = jwtDecode(token); 
+    // console.log('newUserData in useEffect:', newUserData);
+    setUserData({...userData, ...newUserData});
+    setIsLoggedIn(true);        
       console.log("you are logged in");
       navigate("/", { replace: true });
     }
   }, []);
+  // console.log('newUserData in app render:', userData);
 
-  const handleLogin = () => {
+  const handleLogin = (userData) => {
+    setUserData(userData);
+    setIsLoggedIn(true);
     navigate("/", { replace: true });
   };
 
@@ -52,7 +68,6 @@ function App(props) {
             setIsNewUser={setIsNewUser}
             eventData={eventData}
             setEventData={setEventData}
-            onLogin={handleLogin}
           />
         }
       />
@@ -85,6 +100,24 @@ function App(props) {
                 setEventData={setEventData}
                 />
           }{console.log(userData, isNewUser)} */
+}
+
+function getCookie(cname) {
+    let name = cname + "=";
+    let decodedCookie = decodeURIComponent(document.cookie);
+    // console.log(decodedCookie);
+    let ca = decodedCookie.split(';');
+    // console.log(ca);
+    for(let i = 0; i <ca.length; i++) {
+      let c = ca[i];
+      while (c.charAt(0) == ' ') {
+        c = c.substring(1);
+      }
+      if (c.indexOf(name) == 0) {
+        return c.substring(name.length, c.length);
+      }
+    }
+    return "";
 }
 
 export default App;

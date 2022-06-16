@@ -22,7 +22,7 @@ router.post('/login', userController.getUser, userAuthController.setJWT, (req, r
 
 
 //events
-///events/searchEvents?name=${eventData.name}&location=${eventData.location}`
+// /events/searchEvents?name=${eventData.name}&location=${eventData.location}`
 //, eventsController.addToJoin
 router.post('/:user/create', eventsController.createEvent, eventsController.addToJoin, (req,res) =>{
     console.log("Event created")
@@ -30,7 +30,7 @@ router.post('/:user/create', eventsController.createEvent, eventsController.addT
     res.status(200).json(res.locals.joint)
 })
 //Initial display -- all events at location
-router.get('/:user', userAuthController.authenticateJWT, eventsController.getEventsInitial, (req,res) => {
+router.get('/events/:location', userAuthController.authenticateJWT, eventsController.getEventsInitial, (req,res) => {
     res.status(200).json(res.locals.events)
 })
 //Search by location/name -- might need to change how we're getting search params
