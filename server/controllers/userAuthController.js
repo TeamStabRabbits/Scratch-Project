@@ -14,7 +14,9 @@ const userAuthController = {};
 userAuthController.authenticateJWT = (req, res, next) => {
   const { auth: token } = req.cookies;
   console.log(req.cookies);
-  if (!token) return res.sendStatus(401); //maybe use global error handler, next(err);
+  res.locals.authenticated = false;
+  console.log("Checking token");
+  if (!token) return next(); //res.sendStatus(401); //maybe use global error handler, next(err);
 
   //now verify after getting the token
   jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, payload) => { //authenticate with jwts, what does req.user return
@@ -23,7 +25,9 @@ userAuthController.authenticateJWT = (req, res, next) => {
       return res.sendStatus(403); //again, use global error handler
     }
     console.log(payload)
+    res.locals.authenticated = true;
     res.locals.user = payload;
+    console.log("Token validated!");
     return next();
   })
 }

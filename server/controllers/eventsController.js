@@ -8,13 +8,8 @@ const eventsController = {};
 ///events/addNewEvent?name=${eventData.name}&location=${eventData.location}`
 eventsController.createEvent = async (req, res, next) => {
   //console.log(req.body,'req body from event_test')
-  const { user } = req.params
-
-  const text1 = `
-    SELECT _id FROM users
-    WHERE username = $1
-  `;
-  const values1 = [user]
+  if (!res.locals.authenticated) return res.sendStatus(403);
+  const { _id: userId } = res.locals.user;
 
   const { name, location, description, date } = req.body
   const text = `
@@ -23,10 +18,8 @@ eventsController.createEvent = async (req, res, next) => {
     RETURNING _id, created_by
   `;
 
-
   try {
-    const user_id = await db.query(text1, values1)
-    const created_by = user_id.rows[0]._id
+    const created_by = userId;
     const values = [name, location, description, date, created_by];
 
     const ids = await db.query(text, values);
@@ -47,6 +40,7 @@ eventsController.createEvent = async (req, res, next) => {
 
 
 eventsController.addToJoin = async (req, res, next) => {
+  if (!res.locals.authenticated) return res.sendStatus(403);
   const { _id, created_by } = res.locals.ids;
   const event_id = _id;
   const user_id = created_by
@@ -77,7 +71,6 @@ eventsController.addToJoin = async (req, res, next) => {
 ///events/searchEvents?name=${eventData.name}&location=${eventData.location}`
 //search events by keywords/title
 eventsController.getEventsInitial = async (req, res, next) => {
-
   const { location } = req.params
 
 /*   const text = `
@@ -113,8 +106,7 @@ eventsController.getEventsInitial = async (req, res, next) => {
 }
 
 eventsController.getEventsSearch = async (req, res, next) => {
-
-  const { name, location } = req.body
+  const { name, location } = req.query;
   let eventName = name;
   let eventLoc = location;
   //const {name, location, } = req.body;
@@ -150,17 +142,15 @@ eventsController.getEventsSearch = async (req, res, next) => {
 //update event info
 //add event to user/joint
 eventsController.addUserToEvent = async (req, res, next) => {
-  const { user, eventId } = req.params;
+  if (!res.locals.authenticated) return res.sendStatus(403);
+  const { _id: userId } = res.locals.user;
+
+  const { eventId } = req.params;
   //event name from body?
   const { name } = req.body;
-  const text1 = `
-    SELECT _id FROM users
-    WHERE username = $1
-  `;
-  const values1 = [user];
+
   try {
-    const result1 = await db.query(text1, values1);
-    const user_id = result1.rows[0]._id;
+    const user_id = userId;
 
     const text3 = `
       INSERT INTO user_events (user_id, event_id)
@@ -185,83 +175,6 @@ eventsController.addUserToEvent = async (req, res, next) => {
 
 }
 
-//get list of chats
-// eventsController.getChatList = async (req,res,next) => {
-//     const { user } = req.params;
-
-// OUTDATED MODEL OF DATABASE, SEE NEW ER DIAGRAM IF USING BELOW
-//SELECT u.username,CAST(u._id AS INT), CAST(e.user_id AS INT) FROM user_test u INNER JOIN user_event_test e ON CAST(e.user_id AS INT)=u._id 
-//  //   const text = "SELECT INNER JOIN user_event_test INNER JOIN user_test"
-//     const values = [user]
-
-//     try{
-//         const results = await db.query(text, values)
-//         console.log(results);
-//         //join table query
-//         //use a for loop and iterate through rows to generate chatList
-//     }
-//     catch(err){
-//         next({
-//             log: 'Express error handler caught error in userController.getUser',
-//             status: 400,
-//             message: { err: 'An error occurred' },
-//           });
-//     }
-// }
-
-
-//get chat messages
-eventsController.getChatLog = async (req, res, next) => {
-  const { user, eventId } = req.params;
-
-  const text = `
-    SELECT * FROM chats
-    WHERE event_id = $1
-  `;
-  const value = [eventId];
-
-  try {
-    await db.query(text, value)
-
-    return next()
-  }
-  catch (err) {
-    console.error(err);
-    return next({
-      log: 'Express error handler caught error in eventsController.getChatLog',
-      status: 500,
-      message: { err: 'An error occurred' },
-    });
-  }
-
-}
-
-
-//post chat messages
-eventsController.postMessage = async (req, res, next) => {
-  const { message } = req.body;
-  const { user, eventId } = req.params;
-
-  const text = `
-    INSERT INTO chats (user_id, message,events)
-    VALUES($1, $2, $3)
-  `;
-  const values = [user, message,eventId];
-
-  try {
-    await db.query(text, values)
-    return next()
-  }
-  catch (err) {
-    console.error(err);
-    return next({
-      log: 'Express error handler caught error in eventsController.postMessage',
-      status: 500,
-      message: { err: 'An error occurred' },
-    });
-  }
-
-}
 
 ///events/searchEvents?name=${eventData.name}&location=${eventData.location}`
 //search events by keywords/title

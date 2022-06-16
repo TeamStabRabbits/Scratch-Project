@@ -84,12 +84,13 @@ userController.getUser = async (req, res, next) => {
 
 //update user -- what do we want to update?
 userController.updateUser = async (req, res, next) => {
+  if (!res.locals.authenticated) return res.sendStatus(403);
+  const { _id } = res.locals.user;
   //console.log('from get user_test')
-  const { user } = req.params
   const { location } = req.body
   console.log(req.body)
-  const text = `UPDATE users SET location=$2 WHERE username=$1`
-  const values = [user, location]
+  const text = `UPDATE users SET location=$2 WHERE _id=$1`
+  const values = [_id, location]
   try {
     const updated = await db.query(text, values)
     res.locals.user = updated;
