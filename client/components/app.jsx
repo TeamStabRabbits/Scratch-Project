@@ -16,7 +16,7 @@ import jwtDecode from "jwt-decode";
 // EventsPage useEffect runs -> { username: '', location: '' }
 
 // Render App
-// useeffect in app fires
+// use effect in app fires
 // asynchronous state setters did not set state before navigating to event page
 // event page now has initial state which is empty for username and location
 
@@ -43,7 +43,7 @@ function App(props) {
   useEffect(() => {
     const token = getCookie('auth');
     console.log('use effect in app.jsx')
-
+    // if token exists, redirect user to login endpoint
     if (!token) {
       console.log("go login");
       navigate("/login", { replace: true });
